@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOMO Calculator | PeerWealth.Index</title>
+    <style>
+        :root {
+            --bg-card: rgba(10, 20, 30, 0.85); 
+            --accent-fomo: #ff4757; 
+            --accent-success: #2ed573; 
+            --accent-warn: #ffa502; 
+            --accent-excellent: #10ac84; 
+            --accent-outstanding: #00d2d3; 
+            --text-primary: #f5f6fa;
+            --text-secondary: #a4b0be;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #06090e; 
+            background-image: url('https://images.unsplash.com/photo-1642543492481-44e81e3914a7?q=80&w=1200&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-wrapper {
+            max-width: 500px;
+            width: 100%;
+            background-color: var(--bg-card);
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        header { text-align: center; margin-bottom: 28px; }
+        header h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.5px; }
+        header h1 span { color: var(--accent-fomo); }
+        header p { color: var(--text-secondary); font-size: 0.9rem; margin-top: 6px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 6px; }
+        select, input { width: 100%; padding: 13px 16px; background-color: rgba(5, 9, 15, 0.7); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-primary); font-size: 1rem; transition: all 0.25s ease; }
+        select:focus, input:focus { outline: none; border-color: var(--accent-fomo); box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.15); }
+
+        button.btn-primary {
+            width: 100%; padding: 15px; background-color: var(--accent-fomo); color: white; border: none; border-radius: 12px; font-size: 1.05rem; font-weight: 700; cursor: pointer; margin-top: 8px; transition: all 0.2s ease;
+        }
+        button.btn-primary:hover { background-color: #e03d4f; transform: translateY(-1px); }
+
+        .results-panel { display: none; margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--border-color); animation: expandView 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes expandView { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .status-badge { display: inline-block; padding: 5px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+        .status-badge.outstanding { background-color: rgba(0, 210, 211, 0.2); color: var(--accent-outstanding); }
+        .status-badge.excellent { background-color: rgba(16, 172, 132, 0.2); color: var(--accent-excellent); }
+        .status-badge.good { background-color: rgba(46, 213, 115, 0.15); color: var(--accent-success); }
+        .status-badge.average { background-color: rgba(255, 165, 2, 0.15); color: var(--accent-warn); }
+        .status-badge.low { background-color: rgba(255, 71, 87, 0.15); color: var(--accent-fomo); }
+
+        .results-heading { font-size: 1.35rem; font-weight: 700; margin-bottom: 12px; }
+        .gauge-container { width: 100%; height: 8px; background-color: rgba(0, 0, 0, 0.4); border-radius: 10px; margin: 18px 0; overflow: hidden; }
+        .gauge-bar { height: 100%; width: 0%; border-radius: 10px; transition: width 0.8s cubic-bezier(0.1, 0.8, 0.2, 1); }
+        .insight-card { background-color: rgba(255, 255, 255, 0.04); border-radius: 14px; padding: 18px; margin-bottom: 22px; font-size: 0.95rem; border: 1px solid rgba(255, 255, 255, 0.02); white-space: pre-line; }
+
+        button.btn-share {
+            width: 100%; padding: 12px; background-color: transparent; color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease;
+        }
+        button.btn-share:hover { background-color: rgba(255, 255, 255, 0.06); border-color: var(--text-secondary); }
+
+        footer.mandatory-disclaimer {
+            max-width: 500px; width: 100%; text-align: center; font-size: 0.8rem; font-weight: 700; color: #000000; margin-top: 30px; line-height: 1.4; background: rgba(255, 255, 255, 0.7); padding: 8px; border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <header>
+            <h1>FOMO<span> Calculator</span></h1>
+            <p>Reality check vs same age group people in your state</p>
+        </header>
+
+        <main>
+            <div class="form-group">
+                <label for="realAge">Your Real Age</label>
+                <input type="number" id="realAge" placeholder="e.g. 16" min="1" max="100">
+            </div>
+
+            <div class="form-group">
+                <label for="indianState">State</label>
+                <select id="indianState">
+                    <option value="Delhi">Delhi NCR</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="TamilNadu">Tamil Nadu</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="WestBengal">West Bengal</option>
+                    <option value="UttarPradesh">Uttar Pradesh</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="MadhyaPradesh">Madhya Pradesh</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Odisha">Odisha</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="monthlyIncome">Monthly In-Hand Income (₹)</label>
+                <input type="number" id="monthlyIncome" placeholder="e.g. 50000" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="totalInvestments">Total Investments & Savings (₹)</label>
+                <input type="number" id="totalInvestments" placeholder="Stocks, MF, Gold, Bank Balance" min="0">
+            </div>
+
+            <button class="btn-primary" onclick="processFomoMetrics()">Calculate My Stand</button>
+        </main>
+
+        <section class="results-panel" id="resultsPanel">
+            <div id="statusBadge" class="status-badge">Calculating...</div>
+            <div id="resultsHeading" class="results-heading"></div>
+            <div class="gauge-container"><div id="gaugeBar" class="gauge-bar"></div></div>
+            <div id="insightCard" class="insight-card"></div>
+
+            <button class="btn-share" onclick="copyRankToClipboard()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                Copy & Share Anonymous Rank
+            </button>
+        </section>
+    </div>
+
+    <footer class="mandatory-disclaimer">
+        Ranks are estimated don't depand 100% on it
+    </footer>
+
+    <script>
+        const economicDataEngine = {
+            tiers: {
+                high: ['Delhi', 'Maharashtra', 'Karnataka', 'Telangana', 'Goa', 'Sikkim'],
+                mid: ['TamilNadu', 'Gujarat', 'Haryana', 'Punjab', 'WestBengal'],
+                developing: ['UttarPradesh', 'Bihar', 'MadhyaPradesh', 'Rajasthan', 'Odisha']
+            },
+            benchmarks: {
+                under18: { income: 2500, savings: 15000 },    
+                under25: { income: 32000, savings: 250000 },   
+                '25-34': { income: 70000, savings: 900000 },
+                '35-44': { income: 135000, savings: 3200000 },
+                '45-54': { income: 160000, savings: 5500000 }
+            }
+        };
+
+        let clipboardMessage = "";
+
+        function processFomoMetrics() {
+            const ageInput = parseInt(document.getElementById('realAge').value);
+            const state = document.getElementById('indianState').value;
+            const income = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const investments = parseFloat(document.getElementById('totalInvestments').value) || 0;
+
+            if (!ageInput || ageInput < 1) {
+                alert("Please enter a valid real age first!");
+                return;
+            }
+
+            let ageBracketKey = 'under18';
+            let ageDisplayString = "Under 18";
+            
+            if (ageInput >= 18 && ageInput <= 24) { ageBracketKey = 'under25'; ageDisplayString = "18-24"; }
+            else if (ageInput >= 25 && ageInput <= 34) { ageBracketKey = '25-34'; ageDisplayString = "25-34"; }
+            else if (ageInput >= 35 && ageInput <= 44) { ageBracketKey = '35-44'; ageDisplayString = "35-44"; }
+            else if (ageInput >= 45) { ageBracketKey = '45-54'; ageDisplayString = "45-54"; }
+
+            let baseMetrics = economicDataEngine.benchmarks[ageBracketKey];
+            let scaleFactor = 1.0;
+
+            if (economicDataEngine.tiers.mid.includes(state)) scaleFactor = 0.82;
+            else if (economicDataEngine.tiers.developing.includes(state)) scaleFactor = 0.62;
+
+            const targetIncome = Math.round(baseMetrics.income * scaleFactor);
+            const targetSavings = Math.round(baseMetrics.savings * scaleFactor);
+
+            const panel = document.getElementById('resultsPanel');
+            const badge = document.getElementById('statusBadge');
+            const heading = document.getElementById('resultsHeading');
+            const gauge = document.getElementById('gaugeBar');
+            const insight = document.getElementById('insightCard');
+
+            panel.style.display = 'block';
+            
+            // Auto detects the URL format when live on server or local
+            const currentUrl = window.location.href;
+
+            if (income >= 1000000 || investments >= 5000000 || (income >= targetIncome * 8 && investments >= targetSavings * 8)) {
+                badge.className = "status-badge outstanding"; badge.innerText = "Outstanding Growth";
+                heading.innerText = "You are doing amazing! 👑"; gauge.style.width = "100%"; gauge.style.backgroundColor = "var(--accent-outstanding)";
+                insight.innerHTML = `<b>My Rank: Outstanding Growth 💎</b>\nAbsolute financial outlier! Your statistics in ${state} inside the ${ageDisplayString} group are chart-breaking. Keep building the empire.`;
+                clipboardMessage = `My Rank: Outstanding Growth 💎\nDoing amazing in ${state} same age group! No more fake FOMO.\n\nCheck Your Rank: ${currentUrl}`;
+            }
+            else if (income >= targetIncome * 1.5 && investments >= targetSavings * 1.5) {
+                badge.className = "status-badge excellent"; badge.innerText = "Excellent Growth";
+                heading.innerText = "You are doing great! 🚀"; gauge.style.width = "85%"; gauge.style.backgroundColor = "var(--accent-excellent)";
+                insight.innerHTML = `<b>My Rank: Excellent Growth 🔥</b>\nYou are comfortably beating the standard state averages for the ${ageDisplayString} cohort. Wealth compounding structure looks solid!`;
+                clipboardMessage = `My Rank: Excellent Growth 🔥\nBeating state averages safely in the ${ageDisplayString} bracket.\n\nCheck Your Rank: ${currentUrl}`;
+            }
+            else if (income >= targetIncome) {
+                badge.className = "status-badge good"; badge.innerText = "Good Growth";
+                heading.innerText = "You are doing amazing! 💸"; gauge.style.width = "70%"; gauge.style.backgroundColor = "var(--accent-success)";
+                insight.innerHTML = `<b>My Rank: Good Growth 📊</b>\nIncome framework checks out nicely! Focus next on moving more funds into compound assets to hit safe safety brackets.`;
+                clipboardMessage = `My Rank: Good Growth 📊\nSolid cash flow structure. Working on scaling asset generation benchmarks.\n\nCheck Your Rank: ${currentUrl}`;
+            } 
+            else if (income >= targetIncome * 0.6 || investments >= targetSavings * 0.6) {
+                badge.className = "status-badge average"; badge.innerText = "Average Growth";
+                heading.innerText = "You are doing amazing! ⚡"; gauge.style.width = "50%"; gauge.style.backgroundColor = "var(--accent-warn)";
+                insight.innerHTML = `<b>My Rank: Average Growth 🧭</b>\nYou are running neck-to-neck with the average peer lines in ${state}. A small push in secondary optimization styles can throw you directly into top tiers.`;
+                clipboardMessage = `My Rank: Average Growth 🧭\nMoving steadily along the base averages lines.\n\nCheck Your Rank: ${currentUrl}`;
+            } 
+            else {
+                badge.className = "status-badge low"; badge.innerText = "Weak Growth";
+                heading.innerText = "You are a little bit backward! 🚀"; gauge.style.width = "25%"; gauge.style.backgroundColor = "var(--accent-fomo)";
+                insight.innerHTML = `<b>My Rank: Weak Growth 📈</b>\nYou are currently lagging behind the peer averages metrics inside the ${ageDisplayString} tier. Time to focus on high-ticket skills and aggressive budgeting routines.`;
+                clipboardMessage = `My Rank: Weak Growth 🚀\nCurrently lower than average base baselines.\n\nCheck Your Rank: ${currentUrl}`;
+            }
+
+            panel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyRankToClipboard() {
+            if (!clipboardMessage) return;
+            navigator.clipboard.writeText(clipboardMessage).then(() => {
+                alert("Rank text along with Check Rank link successfully copied!");
+            }).catch(err => {
+                console.error('System Clipboard block failure: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
