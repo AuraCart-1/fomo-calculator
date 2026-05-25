@@ -79,9 +79,9 @@
         .insight-card { background-color: rgba(255, 255, 255, 0.04); border-radius: 14px; padding: 18px; margin-bottom: 22px; font-size: 0.95rem; border: 1px solid rgba(255, 255, 255, 0.02); white-space: pre-line; }
 
         button.btn-share {
-            width: 100%; padding: 12px; background-color: var(--accent-fomo); color: white; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+            width: 100%; padding: 12px; background-color: #25d366; color: white; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
         }
-        button.btn-share:hover { background-color: #e03d4f; transform: translateY(-1px); }
+        button.btn-share:hover { background-color: #20ba5a; transform: translateY(-1px); }
 
         footer.mandatory-disclaimer {
             max-width: 500px; width: 100%; text-align: center; font-size: 0.8rem; font-weight: 700; color: #000000; margin-top: 30px; line-height: 1.4; background: rgba(255, 255, 255, 0.7); padding: 8px; border-radius: 8px;
@@ -145,7 +145,7 @@
 
             <button class="btn-share" onclick="triggerSmartShareEngine()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                Share Rank on WhatsApp / Apps
+                Share Real Rank on WhatsApp / Apps
             </button>
         </section>
     </div>
@@ -170,8 +170,6 @@
             }
         };
 
-        // Shared metadata globally updated variables
-        let shareTitle = "My Personal Finance Rank Check";
         let shareText = "";
 
         function processFomoMetrics() {
@@ -209,66 +207,61 @@
             const insight = document.getElementById('insightCard');
 
             panel.style.display = 'block';
-            const currentUrl = window.location.href;
+            const currentUrl = window.location.origin + window.location.pathname;
 
             if (income >= 1000000 || investments >= 5000000 || (income >= targetIncome * 8 && investments >= targetSavings * 8)) {
                 badge.className = "status-badge outstanding"; badge.innerText = "Outstanding Growth";
                 heading.innerText = "You are doing amazing! 👑"; gauge.style.width = "100%"; gauge.style.backgroundColor = "var(--accent-outstanding)";
                 insight.innerHTML = `<b>My Rank: Outstanding Growth 💎</b>\nAbsolute financial outlier! Your statistics in ${state} inside the ${ageDisplayString} group are chart-breaking. Keep building the empire.`;
-                shareText = `My Rank: Outstanding Growth 💎\nDoing amazing in ${state} same age group! No more fake FOMO. Check out yours here:`;
+                shareText = `My Rank: Outstanding Growth 💎\nDoing amazing in ${state} same age group! No more fake FOMO. Check yours here:\n${currentUrl}`;
             }
             else if (income >= targetIncome * 1.5 && investments >= targetSavings * 1.5) {
                 badge.className = "status-badge excellent"; badge.innerText = "Excellent Growth";
                 heading.innerText = "You are doing great! 🚀"; gauge.style.width = "85%"; gauge.style.backgroundColor = "var(--accent-excellent)";
                 insight.innerHTML = `<b>My Rank: Excellent Growth 🔥</b>\nYou are comfortably beating the standard state averages for the ${ageDisplayString} cohort. Wealth compounding structure looks solid!`;
-                shareText = `My Rank: Excellent Growth 🔥\nBeating state peer averages safely in the ${ageDisplayString} bracket! Check yours:`;
+                shareText = `My Rank: Excellent Growth 🔥\nBeating state peer averages safely in the ${ageDisplayString} bracket! Check yours:\n${currentUrl}`;
             }
             else if (income >= targetIncome) {
                 badge.className = "status-badge good"; badge.innerText = "Good Growth";
                 heading.innerText = "You are doing amazing! 💸"; gauge.style.width = "70%"; gauge.style.backgroundColor = "var(--accent-success)";
                 insight.innerHTML = `<b>My Rank: Good Growth 📊</b>\nIncome framework checks out nicely! Focus next on moving more funds into compound assets to hit safe safety brackets.`;
-                shareText = `My Rank: Good Growth 📊\nSolid cash flow structure in ${state}. Check your growth scale profile instantly:`;
+                shareText = `My Rank: Good Growth 📊\nSolid cash flow structure in ${state}. Check your growth scale profile instantly:\n${currentUrl}`;
             } 
             else if (income >= targetIncome * 0.6 || investments >= targetSavings * 0.6) {
                 badge.className = "status-badge average"; badge.innerText = "Average Growth";
                 heading.innerText = "You are doing amazing! ⚡"; gauge.style.width = "50%"; gauge.style.backgroundColor = "var(--accent-warn)";
                 insight.innerHTML = `<b>My Rank: Average Growth 🧭</b>\nYou are running neck-to-neck with the average peer lines in ${state}. A small push in secondary optimization styles can throw you directly into top tiers.`;
-                shareText = `My Rank: Average Growth 🧭\nMoving steadily along the base averages lines. Check your status here:`;
+                shareText = `My Rank: Average Growth 🧭\nMoving steadily along the base averages lines. Check your status here:\n${currentUrl}`;
             } 
             else {
                 badge.className = "status-badge low"; badge.innerText = "Weak Growth";
                 heading.innerText = "You are a little bit backward! 🚀"; gauge.style.width = "25%"; gauge.style.backgroundColor = "var(--accent-fomo)";
                 insight.innerHTML = `<b>My Rank: Weak Growth 📈</b>\nYou are currently lagging behind the peer averages metrics inside the ${ageDisplayString} tier. Time to focus on high-ticket skills and aggressive budgeting routines.`;
-                shareText = `My Rank: Weak Growth 🚀\nCurrently benchmarking baseline levels. Check out where you stand instantly:`;
+                shareText = `My Rank: Weak Growth 🚀\nCurrently benchmarking baseline levels. Check out where you stand instantly:\n${currentUrl}`;
             }
 
             panel.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Native System Share Sheet Wrapper logic
         function triggerSmartShareEngine() {
             if (!shareText) {
                 alert("Please calculate your growth rank baseline metrics first!");
                 return;
             }
 
-            const activeUrl = window.location.href;
-
-            // Checks if the platform browser natively supports modern application sharing sheets
+            // Mobile app interface sheet trigger
             if (navigator.share) {
                 navigator.share({
-                    title: shareTitle,
-                    text: `${shareText}\n\n`,
-                    url: activeUrl
+                    title: "My Personal Finance Rank Check",
+                    text: shareText
                 })
-                .then(() => console.log('Share operations completed cleanly.'))
-                .catch((err) => console.log('Share interface cancelled by user or broke.', err));
+                .then(() => console.log('Shared successfully'))
+                .catch((err) => console.log('Error sharing:', err));
             } else {
-                // Fallback mechanism if opened on desktop devices lacking application routes
-                const fallbackBlock = `${shareText}\n\nLink: ${activeUrl}`;
-                navigator.clipboard.writeText(fallbackBlock).then(() => {
-                    alert("Native sharing dashboard not supported on this device/browser. Text rank along with check link has been copied to clipboard instead!");
-                });
+                // Laptop/PC Fallback redirect standard web WhatsApp logic
+                const encodedText = encodeURIComponent(shareText);
+                const whatsappWebUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+                window.open(whatsappWebUrl, '_blank');
             }
         }
     </script>
