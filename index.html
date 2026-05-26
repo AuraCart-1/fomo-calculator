@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOMO Calculator | PeerWealth.Index</title>
+    <title>FOMO Calculator | PeerWealth Index</title>
     <style>
         :root {
             --bg-card: rgba(10, 20, 30, 0.85); 
@@ -53,6 +53,22 @@
         header h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.5px; }
         header h1 span { color: var(--accent-fomo); }
         header p { color: var(--text-secondary); font-size: 0.9rem; margin-top: 6px; }
+        
+        .privacy-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(46, 213, 115, 0.1);
+            border: 1px solid rgba(46, 213, 115, 0.2);
+            color: #2ed573;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+        }
+
         .form-group { margin-bottom: 20px; }
         label { display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 6px; }
         select, input { width: 100%; padding: 13px 16px; background-color: rgba(5, 9, 15, 0.7); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-primary); font-size: 1rem; transition: all 0.25s ease; }
@@ -83,8 +99,27 @@
         }
         button.btn-share:hover { background-color: #20ba5a; transform: translateY(-1px); }
 
+        .source-tag {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 15px;
+            opacity: 0.8;
+        }
+
         footer.mandatory-disclaimer {
-            max-width: 500px; width: 100%; text-align: center; font-size: 0.8rem; font-weight: 700; color: #000000; margin-top: 30px; line-height: 1.4; background: rgba(255, 255, 255, 0.7); padding: 8px; border-radius: 8px;
+            max-width: 500px; 
+            width: 100%; 
+            text-align: center; 
+            font-size: 0.75rem; 
+            font-weight: 500; 
+            color: rgba(255, 255, 255, 0.6); 
+            margin-top: 30px; 
+            line-height: 1.5; 
+            background: rgba(255, 255, 255, 0.03); 
+            padding: 12px 16px; 
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
@@ -93,8 +128,13 @@
     <div class="app-wrapper">
         <header>
             <h1>FOMO<span> Calculator</span></h1>
-            <p>Reality check vs same age group people in your state</p>
+            <p>Reality check vs same age group peers in your state</p>
         </header>
+
+        <div class="privacy-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            100% Anonymous • Data never leaves your device
+        </div>
 
         <main>
             <div class="form-group">
@@ -131,7 +171,7 @@
 
             <div class="form-group">
                 <label for="totalInvestments">Total Investments & Savings (₹)</label>
-                <input type="number" id="totalInvestments" placeholder="Stocks, MF, Gold, Bank Balance" min="0">
+                <input type="number" id="totalInvestments" placeholder="Stocks, Mutual Funds, Gold, Bank Balance" min="0">
             </div>
 
             <button class="btn-primary" onclick="processFomoMetrics()">Calculate My Stand</button>
@@ -145,13 +185,17 @@
 
             <button class="btn-share" onclick="triggerSmartShareEngine()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                Share Real Rank on WhatsApp / Apps
+                Share Rank via WhatsApp / Apps
             </button>
+            
+            <div class="source-tag">
+                📊 Simulated benchmark via regional GDP per capita & MoSPI reports
+            </div>
         </section>
     </div>
 
     <footer class="mandatory-disclaimer">
-        Ranks are estimated don't depand 100% on it
+        <b>Disclaimer:</b> PeerWealth Index is an educational benchmarking tool simulated from multi-tier macroeconomic regional data. Estimates are for motivational and reference purposes only.
     </footer>
 
     <script>
@@ -249,7 +293,6 @@
                 return;
             }
 
-            // Mobile app interface sheet trigger
             if (navigator.share) {
                 navigator.share({
                     title: "My Personal Finance Rank Check",
@@ -258,7 +301,6 @@
                 .then(() => console.log('Shared successfully'))
                 .catch((err) => console.log('Error sharing:', err));
             } else {
-                // Laptop/PC Fallback redirect standard web WhatsApp logic
                 const encodedText = encodeURIComponent(shareText);
                 const whatsappWebUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
                 window.open(whatsappWebUrl, '_blank');
